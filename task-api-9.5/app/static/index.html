@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task Manager</title>
+  <style>
+    :root{--bg:#f6f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--border:#e5e7eb;--primary:#2563eb;--primary-dark:#1d4ed8;--danger:#dc2626;--shadow:0 8px 24px rgba(15,23,42,.07)}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    button,input,select,textarea{font:inherit} button{cursor:pointer;border:0} .hidden{display:none!important}
+    .topbar{background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}.topbar-inner{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:20px;font-weight:800}.user-area{display:flex;align-items:center;gap:10px}.avatar{width:34px;height:34px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:grid;place-items:center;font-weight:800}
+    .container{max-width:1100px;margin:0 auto;padding:28px 20px 50px}.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.auth-card{width:min(430px,100%);background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:28px}.auth-card h1{margin:0 0 6px;font-size:28px}.sub{color:var(--muted);margin:0 0 22px}.tabs{display:flex;gap:4px;background:#f3f4f6;padding:4px;border-radius:10px;margin-bottom:20px}.tab{flex:1;padding:9px;border-radius:8px;background:transparent;color:var(--muted)}.tab.active{background:#fff;color:var(--text);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    label{display:block;font-weight:650;margin:13px 0 6px}input,select,textarea{width:100%;border:1px solid var(--border);border-radius:9px;padding:10px 12px;background:#fff;color:var(--text);outline:none}input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}textarea{resize:vertical;min-height:90px}.btn{border-radius:9px;padding:10px 14px;font-weight:700}.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}.btn-secondary{background:#eef2f7;color:#374151}.btn-danger{background:#fee2e2;color:#b91c1c}.btn-ghost{background:transparent;color:#4b5563;padding:8px}.full{width:100%}.row{display:flex;gap:10px}.row>*{flex:1}.message{margin-top:14px;padding:10px 12px;border-radius:9px;background:#fef2f2;color:#991b1b;font-size:14px}.success{background:#ecfdf5;color:#065f46}
+    .hero{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}.hero h1{margin:0;font-size:30px}.hero p{margin:4px 0 0;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}.stat strong{font-size:24px;display:block}.stat span{font-size:13px;color:var(--muted)}
+    .toolbar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:16px;display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:9px}.toolbar input,.toolbar select{height:42px}.toolbar .btn{height:42px}
+    .tasks{display:grid;gap:10px}.task{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.task-main{min-width:0}.task-title{font-weight:750;font-size:17px;margin:0 0 5px}.task-desc{color:var(--muted);margin:0 0 10px;white-space:pre-wrap;word-break:break-word}.meta{display:flex;flex-wrap:wrap;gap:7px}.pill{font-size:12px;font-weight:700;border-radius:999px;padding:4px 8px;background:#f3f4f6;color:#4b5563}.pill.high{background:#fee2e2;color:#991b1b}.pill.medium{background:#fef3c7;color:#92400e}.pill.low{background:#dcfce7;color:#166534}.pill.todo{background:#e0e7ff;color:#3730a3}.pill.in_progress{background:#dbeafe;color:#1d4ed8}.pill.done{background:#dcfce7;color:#166534}.actions{display:flex;gap:6px;flex-shrink:0}.empty{background:var(--card);border:1px dashed #cbd5e1;border-radius:14px;text-align:center;padding:42px 20px;color:var(--muted)}
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center;padding:20px;z-index:20}.modal-card{background:#fff;border-radius:16px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0}.close{background:#f3f4f6;border-radius:8px;width:36px;height:36px}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+    @media(max-width:760px){.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.stats{grid-template-columns:1fr 1fr}.hero{align-items:flex-start;flex-direction:column}.task{flex-direction:column}.actions{width:100%}.actions .btn{flex:1}.topbar-inner{padding:12px 14px}.container{padding:22px 14px 40px}}
+    @media(max-width:480px){.stats{grid-template-columns:1fr}.row{flex-direction:column}.auth-card{padding:22px}}
+  </style>
+</head>
+<body>
+  <section id="authView" class="auth-wrap">
+    <div class="auth-card">
+      <h1>Task Manager</h1><p class="sub">A simple place to manage your tasks.</p>
+      <div class="tabs"><button id="loginTab" class="tab active" type="button">Login</button><button id="registerTab" class="tab" type="button">Create account</button></div>
+      <form id="authForm">
+        <div id="nameField" class="hidden"><label for="name">Name</label><input id="name" autocomplete="name"></div>
+        <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+        <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="8" required>
+        <button id="authButton" class="btn btn-primary full" style="margin-top:18px" type="submit">Login</button>
+        <div id="authMessage" class="message hidden"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="appView" class="hidden">
+    <header class="topbar"><div class="topbar-inner"><div class="brand">Task Manager</div><div class="user-area"><div id="avatar" class="avatar">U</div><span id="userName"></span><button id="logout" class="btn btn-secondary" type="button">Logout</button></div></div></header>
+    <main class="container">
+      <div class="hero"><div><h1>My Tasks</h1><p>Keep track of what needs to get done.</p></div><button id="newTask" class="btn btn-primary" type="button">+ New task</button></div>
+      <div class="stats"><div class="stat"><strong id="totalCount">0</strong><span>Total tasks</span></div><div class="stat"><strong id="todoCount">0</strong><span>To do</span></div><div class="stat"><strong id="doneCount">0</strong><span>Completed</span></div></div>
+      <div class="toolbar"><input id="search" placeholder="Search tasks..." aria-label="Search tasks"><select id="statusFilter"><option value="">All statuses</option><option value="todo">To do</option><option value="in_progress">In progress</option><option value="done">Done</option></select><select id="priorityFilter"><option value="">All priorities</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select><button id="refresh" class="btn btn-secondary" type="button">Refresh</button></div>
+      <div id="listMessage" class="message hidden"></div>
+      <div id="tasks" class="tasks"></div>
+    </main>
+  </section>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card"><div class="modal-head"><h2 id="modalTitle">New task</h2><button id="closeModal" class="close" type="button" aria-label="Close">×</button></div>
+      <form id="taskForm"><input id="taskId" type="hidden"><label for="title">Title</label><input id="title" required maxlength="200" placeholder="e.g. Finish project report"><label for="description">Description</label><textarea id="description" maxlength="2000" placeholder="Optional details..."></textarea><div class="row"><div><label for="status">Status</label><select id="status"><option value="todo">To do</option><option value="in_progress">In progress</option><option value="done">Done</option></select></div><div><label for="priority">Priority</label><select id="priority"><option value="medium">Medium</option><option value="low">Low</option><option value="high">High</option></select></div></div><label for="dueDate">Due date</label><input id="dueDate" type="date"><div id="taskMessage" class="message hidden"></div><div class="form-actions"><button id="cancelModal" class="btn btn-secondary" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save task</button></div></form>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let mode = 'login';
+  let tasks = [];
+  let token = sessionStorage.getItem('task_token') || '';
+  let user = JSON.parse(sessionStorage.getItem('task_user') || 'null');
+
+  function setMessage(el, text, success=false){ el.textContent=text; el.classList.toggle('hidden', !text); el.classList.toggle('success', success); }
+  function initials(name){ return (name||'U').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase(); }
+  function escapeHtml(s){ return String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+  function setMode(next){
+    mode=next; $('loginTab').classList.toggle('active', mode==='login'); $('registerTab').classList.toggle('active', mode==='register');
+    $('nameField').classList.toggle('hidden', mode!=='register'); $('authButton').textContent=mode==='login'?'Login':'Create account'; $('password').autocomplete=mode==='login'?'current-password':'new-password'; setMessage($('authMessage'),'');
+  }
+  $('loginTab').onclick=()=>setMode('login'); $('registerTab').onclick=()=>setMode('register');
+
+  async function api(path, options={}){
+    const headers={'Content-Type':'application/json', ...(options.headers||{})}; if(token) headers.Authorization='Bearer '+token;
+    const res=await fetch(path,{...options,headers}); let body=null; try{body=await res.json()}catch{}
+    if(res.status===401){ sessionStorage.removeItem('task_token'); token=''; user=null; showAuth(); throw new Error('Your session expired. Please log in again.'); }
+    if(!res.ok){ throw new Error(body?.error?.message || 'Something went wrong.'); }
+    return body;
+  }
+
+  $('authForm').onsubmit=async e=>{
+    e.preventDefault(); setMessage($('authMessage'),'');
+    const payload={email:$('email').value.trim(),password:$('password').value}; if(mode==='register') payload.name=$('name').value.trim();
+    try{
+      const data=await api(mode==='login'?'/api/v1/auth/login':'/api/v1/auth/register',{method:'POST',body:JSON.stringify(payload)});
+      token=data.data.access_token; user=data.data.user; sessionStorage.setItem('task_token',token); sessionStorage.setItem('task_user',JSON.stringify(user)); showApp(); await loadTasks();
+    }catch(err){ setMessage($('authMessage'),err.message); }
+  };
+
+  function showAuth(){ $('appView').classList.add('hidden'); $('authView').classList.remove('hidden'); }
+  function showApp(){ $('authView').classList.add('hidden'); $('appView').classList.remove('hidden'); $('userName').textContent=user?.name||'User'; $('avatar').textContent=initials(user?.name); }
+
+  function render(){
+    const q=$('search').value.trim().toLowerCase(), sf=$('statusFilter').value, pf=$('priorityFilter').value;
+    const filtered=tasks.filter(t=>(!q || t.title.toLowerCase().includes(q) || (t.description||'').toLowerCase().includes(q)) && (!sf||t.status===sf) && (!pf||t.priority===pf));
+    $('totalCount').textContent=tasks.length; $('todoCount').textContent=tasks.filter(t=>t.status!=='done').length; $('doneCount').textContent=tasks.filter(t=>t.status==='done').length;
+    if(!filtered.length){ $('tasks').innerHTML='<div class="empty">No tasks found.<br><button id="emptyNew" class="btn btn-primary" style="margin-top:12px" type="button">Create a task</button></div>'; $('emptyNew').onclick=()=>openModal(); return; }
+    $('tasks').innerHTML=filtered.map(t=>`<article class="task"><div class="task-main"><h3 class="task-title">${escapeHtml(t.title)}</h3><p class="task-desc">${escapeHtml(t.description||'No description')}</p><div class="meta"><span class="pill ${t.status}">${t.status==='todo'?'To do':t.status==='in_progress'?'In progress':'Done'}</span><span class="pill ${t.priority}">${t.priority[0].toUpperCase()+t.priority.slice(1)} priority</span>${t.due_date?`<span class="pill">Due ${escapeHtml(t.due_date)}</span>`:''}</div></div><div class="actions"><button class="btn btn-secondary edit" data-id="${t.id}" type="button">Edit</button><button class="btn btn-danger delete" data-id="${t.id}" type="button">Delete</button></div></article>`).join('');
+    document.querySelectorAll('.edit').forEach(b=>b.onclick=()=>openModal(tasks.find(t=>t.id===Number(b.dataset.id))));
+    document.querySelectorAll('.delete').forEach(b=>b.onclick=()=>deleteTask(Number(b.dataset.id)));
+  }
+
+  async function loadTasks(){
+    if(!token)return; setMessage($('listMessage'),'');
+    try{ const params=new URLSearchParams({limit:'100',offset:'0',sort:'id',order:'desc'}); const data=await api('/api/v1/tasks?'+params.toString()); tasks=data.data||[]; render(); }
+    catch(err){ setMessage($('listMessage'),err.message); if(!token) showAuth(); }
+  }
+
+  function openModal(task=null){
+    $('modalTitle').textContent=task?'Edit task':'New task'; $('taskId').value=task?.id||''; $('title').value=task?.title||''; $('description').value=task?.description||''; $('status').value=task?.status||'todo'; $('priority').value=task?.priority||'medium'; $('dueDate').value=task?.due_date||''; setMessage($('taskMessage'),''); $('modal').classList.remove('hidden'); $('title').focus();
+  }
+  function closeModal(){ $('modal').classList.add('hidden'); }
+  $('newTask').onclick=()=>openModal(); $('closeModal').onclick=closeModal; $('cancelModal').onclick=closeModal; $('modal').onclick=e=>{if(e.target===$('modal'))closeModal()};
+
+  $('taskForm').onsubmit=async e=>{ e.preventDefault(); setMessage($('taskMessage'),''); const id=$('taskId').value; const payload={title:$('title').value.trim(),description:$('description').value.trim()||null,status:$('status').value,priority:$('priority').value,due_date:$('dueDate').value||null}; try{ await api(id?'/api/v1/tasks/'+id:'/api/v1/tasks',{method:id?'PATCH':'POST',body:JSON.stringify(payload)}); closeModal(); await loadTasks(); }catch(err){setMessage($('taskMessage'),err.message)} };
+
+  async function deleteTask(id){ if(!confirm('Delete this task?'))return; try{await api('/api/v1/tasks/'+id,{method:'DELETE'}); await loadTasks()}catch(err){setMessage($('listMessage'),err.message)} }
+  $('logout').onclick=()=>{sessionStorage.clear(); token=''; user=null; tasks=[]; showAuth();};
+  $('refresh').onclick=loadTasks; $('search').oninput=render; $('statusFilter').onchange=render; $('priorityFilter').onchange=render;
+  if(token&&user){showApp();loadTasks();} else showAuth();
+})();
+</script>
+</body>
+</html>

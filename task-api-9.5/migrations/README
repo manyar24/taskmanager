@@ -1,0 +1,6 @@
+Alembic migrations live here. After installing dependencies:
+
+  alembic revision --autogenerate -m "create users and tasks"
+  alembic upgrade head
+
+The app also creates missing tables on startup for simple local evaluation. For production, use Alembic migrations as the source of truth.
